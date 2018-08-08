@@ -1,0 +1,261 @@
+swagger: "2.0"
+
+info:
+  version: "v1.1.1 20180808"
+  title: "msc-cascade"
+  description: "
+  # 文档变更记录
+  
+  ## v1.1.1 @小砾 20180808
+  
+  - 增加带拼音的城市列表
+  
+  - 接口values更名value
+  
+  ## v1.0.0 @小砾 20180808
+  
+  - 创建
+  
+  "
+host: "localhost:8080"
+basePath: "/areadata/iview/v1.0"
+schemes:
+- "http"
+
+tags:
+- name: "iview"
+  description: "iview"
+
+definitions:
+  ApiResponse:
+    type: "object"
+    properties: &ApiResponse
+      code:
+        type: "integer"
+        format: "int(2)"
+        default: 0
+        description: "0:success, 1:failed"
+      message:
+        type: "string"
+        default: "success"
+        
+  AreaItem: 
+    type: "object"
+    properties: &AreaItem
+      value:
+        type: "string"
+      label:
+        type: "string"
+
+
+paths:
+  /province:
+    post:
+      tags:
+      - "iview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:  
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            provValues:
+              type: "array"
+              items:
+                type: "string"
+            cityValues:
+              type: "array"
+              items:
+                type: "string"
+            areaValues:
+              type: "array"
+              items:
+                type: "string"
+            deep:
+              type: "integer"
+              description: "1 deep, 2 undeep, 1 get province, city and area 3 levels, but 2 just return province level"
+              default: "1"
+              enum:
+                - "1"
+                - "2"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem
+                    children:
+                      type: "array"
+                      items:
+                        type: "object"
+                        properties:
+                          <<: *AreaItem
+                          children:
+                            type: "array"
+                            items:
+                              type: "object"
+                              properties:
+                                <<: *AreaItem
+  /city:
+    post:
+      tags:
+      - "iview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:  
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            provValues:
+              type: "array"
+              items:
+                type: "string"
+            cityValues:
+              type: "array"
+              items:
+                type: "string"
+            areaValues:
+              type: "array"
+              items:
+                type: "string"
+            deep:
+              type: "integer"
+              description: "1 deep, 2 undeep, 1 get city and area 3 levels, but 2 just return city level"
+              default: "1"
+              enum:
+                - "1"
+                - "2"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem
+                    children:
+                      type: "array"
+                      items:
+                        type: "object"
+                        properties:
+                          <<: *AreaItem
+
+  /city/pinyin:
+    get:
+      tags:
+      - "iview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem
+                    pinyin:
+                      type: 'string'
+
+  /area:
+    post:
+      tags:
+      - "iview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            cityValues:
+              type: "array"
+              items:
+                type: "string"
+            areaValues:
+              type: "array"
+              items:
+                type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem
+  /value:
+    post:
+      description: "get values with labels"
+      tags:
+      - "iview"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "array"
+          items:
+            type: "string"
+      responses:
+        200:
+          description: "success"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content: 
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem
+                    level:
+                      type: "integer"
+                      description: "1:province, 2:city, 3:area"
+                      enum:
+                      - "1"
+                      - "2"
+                      - "3"
