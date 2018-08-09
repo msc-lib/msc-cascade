@@ -44,7 +44,14 @@ public class ResHelper {
 	}
 
 	public static String success(Object content) {
-		return Json.encode(new ResBean(content));
+		return success(content, false);
 	}
 	
+	public static String success(Object content, boolean pretty) {
+		if (pretty) {
+			return Json.encodePrettily(content);
+		}
+		return Json.encode(new ResBean(content));
+		
+	}
 }

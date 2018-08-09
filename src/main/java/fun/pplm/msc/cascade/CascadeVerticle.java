@@ -1,5 +1,6 @@
 package fun.pplm.msc.cascade;
 
+import fun.pplm.msc.cascade.data.Area;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
@@ -14,7 +15,7 @@ public class CascadeVerticle extends AbstractVerticle {
     	 
     	 router.get("/area/iview").handler(routingContext -> {
     		 HttpServerResponse response = routingContext.response();
-    		 response.end(ResHelper.success(AreaData.AREA_DATA.getAreaData()));
+    		 response.end(ResHelper.success(Area.INST.getAreaData()));
     	 });
 
          vertx.createHttpServer().requestHandler(router::accept).listen(8080);
