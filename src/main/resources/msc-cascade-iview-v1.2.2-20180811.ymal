@@ -1,10 +1,16 @@
 swagger: "2.0"
 
 info:
-  version: "v1.1.1 20180808"
+  version: "v1.1.2 20180811"
   title: "msc-cascade"
   description: "
   # 文档变更记录
+  
+  ## v1.2.2 @小砾 20180811
+  
+  - 优化省市区api设计
+  
+  - 增加省市区级联get方法
   
   ## v1.1.1 @小砾 20180808
   
@@ -49,7 +55,56 @@ definitions:
 
 
 paths:
+  /areadata:
+    get:
+      tags:
+      - "iview"
+      produces:
+      - "application/json"  
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem
+                    children:
+                      type: "array"
+                      items:
+                        type: "object"
+                        properties:
+                          <<: *AreaItem
+                          children:
+                            type: "array"
+                            items:
+                              type: "object"
+                              properties:
+                                <<: *AreaItem
   /province:
+    get:
+      tags:
+      - "iview"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem   
     post:
       tags:
       - "iview"
@@ -68,18 +123,10 @@ paths:
               type: "array"
               items:
                 type: "string"
-            cityValues:
-              type: "array"
-              items:
-                type: "string"
-            areaValues:
-              type: "array"
-              items:
-                type: "string"
             deep:
               type: "integer"
               description: "1 deep, 2 undeep, 1 get province, city and area 3 levels, but 2 just return province level"
-              default: "1"
+              default: "2"
               enum:
                 - "1"
                 - "2"
@@ -108,6 +155,30 @@ paths:
                               type: "object"
                               properties:
                                 <<: *AreaItem
+  /city/{provValue}:
+    get:
+      tags:
+      - "iview"
+      produces:
+      - "application/json"
+      parameters:  
+        - in: "path"
+          name: "provValue"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem  
   /city:
     post:
       tags:
@@ -131,14 +202,10 @@ paths:
               type: "array"
               items:
                 type: "string"
-            areaValues:
-              type: "array"
-              items:
-                type: "string"
             deep:
               type: "integer"
               description: "1 deep, 2 undeep, 1 get city and area 3 levels, but 2 just return city level"
-              default: "1"
+              default: "2"
               enum:
                 - "1"
                 - "2"
@@ -186,6 +253,30 @@ paths:
                     pinyin:
                       type: 'string'
 
+  /area/{cityValue}:
+    get:
+      tags:
+      - "iview"
+      produces:
+      - "application/json"
+      parameters:  
+        - in: "path"
+          name: "cityValue"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem
   /area:
     post:
       tags:

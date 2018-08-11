@@ -1,11 +1,27 @@
 package fun.pplm.msc.cascade;
 
+import javax.ws.rs.core.Response;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import io.vertx.core.json.Json;
 
 public class ResHelper {
+	
+	public static Response success() {
+		return success(null);
+	}
+	
+	public static Response success(Object content) {
+		String resMsg = Json.encode(new ResBean(content));
+		return Response.ok(resMsg).build();
+	}
+	
 	public static class ResBean {
 		private String code = "0";
 		private String message = "success";
+		
+		@JsonInclude(JsonInclude.Include.NON_NULL)
 		private Object content;
 
 		public ResBean() {
@@ -42,16 +58,5 @@ public class ResHelper {
 		}
 		
 	}
-
-	public static String success(Object content) {
-		return success(content, false);
-	}
 	
-	public static String success(Object content, boolean pretty) {
-		if (pretty) {
-			return Json.encodePrettily(content);
-		}
-		return Json.encode(new ResBean(content));
-		
-	}
 }
