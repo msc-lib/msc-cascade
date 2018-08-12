@@ -9,3 +9,4 @@
 ## 参考
 - [政区划代码](http://www.mca.gov.cn/article/sj/xzqh/2018/)
 - [resteasy base on vert-x3](https://github.com/vert-x3/vertx-examples/tree/master/resteasy-examples)
+- [Excel 汉字转拼音](https://blog.csdn.net/yxwmzouzou/article/details/32330679)
