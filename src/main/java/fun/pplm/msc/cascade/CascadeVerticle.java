@@ -1,8 +1,11 @@
 package fun.pplm.msc.cascade;
 
+import org.jboss.resteasy.plugins.server.vertx.VertxRegistry;
 import org.jboss.resteasy.plugins.server.vertx.VertxRequestHandler;
 import org.jboss.resteasy.plugins.server.vertx.VertxResteasyDeployment;
 
+import fun.pplm.msc.cascade.service.AreaDataService;
+import fun.pplm.msc.cascade.service.InfoService;
 import io.vertx.core.AbstractVerticle;
 
 public class CascadeVerticle extends AbstractVerticle {
@@ -11,7 +14,9 @@ public class CascadeVerticle extends AbstractVerticle {
 	public void start() throws Exception {
 		VertxResteasyDeployment deployment = new VertxResteasyDeployment();
 	    deployment.start();
-	    deployment.getRegistry().addPerInstanceResource(AreaDataService.class);
+	    VertxRegistry registry = deployment.getRegistry();
+	    registry.addPerInstanceResource(AreaDataService.class);
+	    registry.addPerInstanceResource(InfoService.class);
 
 	    // Start the front end server using the Jax-RS controller
 	    vertx.createHttpServer()

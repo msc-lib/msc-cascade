@@ -1,4 +1,4 @@
-package fun.pplm.msc.cascade;
+package fun.pplm.msc.cascade.service;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import fun.pplm.msc.cascade.data.AreaIview;
+import fun.pplm.msc.cascade.dao.AreaIview;
+import fun.pplm.msc.cascade.query.IviewQuery;
+import fun.pplm.msc.cascade.utils.ResHelper;
 import io.vertx.core.json.Json;
 
 @Path("/areadata/iview/v1.0")
@@ -93,6 +95,17 @@ public class AreaDataService {
 		}
 		List<String> values = Json.decodeValue(body, new TypeReference<List<String>>(){});
 		return ResHelper.success(areaIview.getFromValue(values));
+	}
+	
+	@GET
+	@Path("/value/city/{city}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response doGetValueCity(@PathParam("city") String city) {
+		if (StringUtils.isBlank(city)) {
+			return ResHelper.success(Collections.emptyList());
+		}
+	//	List<String> values = Json.decodeValue(body, new TypeReference<List<String>>(){});
+		return ResHelper.success();
 	}
 	
 }

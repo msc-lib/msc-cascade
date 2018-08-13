@@ -1,8 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
-encoding//src/main/java/fun/pplm/msc/cascade/data/Area.java=UTF-8
+encoding//src/main/java/fun/pplm/msc/cascade/dao/Area.java=UTF-8
 encoding//src/main/resources/area.data=UTF-8
 encoding//src/main/resources/area.json=UTF-8
-encoding//src/main/resources/msc-cascade-iview-v1.2.2-20180811.ymal=UTF-8
+encoding//src/main/resources/msc-cascade-iview-v1.3.2-20180813.ymal=UTF-8
 encoding//src/test/java=UTF-8
 encoding/README.md=UTF-8

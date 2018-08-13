@@ -1,10 +1,14 @@
 swagger: "2.0"
 
 info:
-  version: "v1.1.2 20180811"
+  version: "v1.3.2 20180813"
   title: "msc-cascade"
   description: "
   # 文档变更记录
+
+  ## v1.3.2 @小砾 20180813
+  
+  - 增加城市模糊查询接口
   
   ## v1.2.2 @小砾 20180811
   
@@ -231,6 +235,7 @@ paths:
 
   /city/pinyin:
     get:
+      description: "获取全部城市带有拼音的信息"
       tags:
       - "iview"
       consumes:
@@ -315,7 +320,7 @@ paths:
                     <<: *AreaItem
   /value:
     post:
-      description: "get values with labels"
+      description: "机构名称获取机构信息"
       tags:
       - "iview"
       consumes:
@@ -350,3 +355,28 @@ paths:
                       - "1"
                       - "2"
                       - "3"
+  /value/city/{city}:
+    get:
+      description: "城市名称模糊查询城市信息"
+      tags:
+      - "iview"
+      produces:
+      - "application/json"
+      parameters: 
+      - in: "path"
+        name: "city"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "success"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content: 
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    <<: *AreaItem

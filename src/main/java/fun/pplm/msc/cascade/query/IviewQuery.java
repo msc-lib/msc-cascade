@@ -1,4 +1,4 @@
-package fun.pplm.msc.cascade;
+package fun.pplm.msc.cascade.query;
 
 import java.util.List;
 

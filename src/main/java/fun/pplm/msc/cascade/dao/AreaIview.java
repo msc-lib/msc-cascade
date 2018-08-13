@@ -1,4 +1,4 @@
-package fun.pplm.msc.cascade.data;
+package fun.pplm.msc.cascade.dao;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +22,8 @@ public class AreaIview {
 	private Map<String, IviewBean> iviewMapData = new HashMap<>();
 
 	private IviewBean iviewData = new IviewBean("86", "中国");
+	
+	private List<IviewBean> cityPinyinData = new ArrayList<>();
 
 	private AreaIview() {
 		super();
@@ -32,12 +34,21 @@ public class AreaIview {
 		this.mapData = Area.INST.getMapData();
 		this.valueData = Area.INST.getValueData();
 		processIviewData();
+		processCityPinyin();
 	}
 
 	private void processIviewData() {
 		processIview(iviewData.getValue(), iviewData);
 	}
 
+	private void processCityPinyin() {
+		for (Entry<String, String> item : valueData.entrySet()) {
+			if (item.getKey().endsWith("市")) {
+				System.out.println(item.getKey());
+			}
+		}
+	}
+	
 	private void processIview(String key, IviewBean iviewBean) {
 		iviewMapData.put(key, iviewBean);
 		if (mapData.containsKey(key)) {
@@ -135,6 +146,10 @@ public class AreaIview {
 				}).map(value -> new IviewBean(valueData.get(value), value)).collect(Collectors.toList());
 	}
 
+	public List<IviewBean> getCityPinyin() {
+		return cityPinyinData;
+	}
+	
 	public static class IviewBean {
 		private String value;
 		private String label;
@@ -186,7 +201,9 @@ public class AreaIview {
 		public void setChildren(List<IviewBean> children) {
 			this.children = children;
 		}
-
 	}
 
+	public static void main(String[] args) {
+		AreaIview.INST.getCityPinyin();
+	}
 }

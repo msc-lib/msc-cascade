@@ -1,4 +1,4 @@
-package fun.pplm.msc.cascade;
+package fun.pplm.msc.cascade.utils;
 
 import javax.ws.rs.core.Response;
 
