@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -54,7 +55,7 @@ public class AreaDataService {
 	@GET
 	@Path("/city/{provValue}")
 	public Response doGetCity(@PathParam("provValue") String provValue) {
-		return ResHelper.success(areaIview.getCities(provValue));
+		return ResHelper.success(areaIview.getCitiesByProinvceCode(provValue));
 	}
 	
 	@GET
@@ -104,14 +105,14 @@ public class AreaDataService {
 	}
 	
 	@GET
-	@Path("/value/city/{city}")
+	@Path("/value/city")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response doGetValueCity(@PathParam("city") String city) {
+	public Response doGetValueCity(@QueryParam("city") String city) {
 		if (StringUtils.isBlank(city)) {
 			return ResHelper.success(Collections.emptyList());
 		}
-	//	List<String> values = Json.decodeValue(body, new TypeReference<List<String>>(){});
-		return ResHelper.success();
+		System.out.println(city);
+		return ResHelper.success(areaIview.getCitiesByValue(city));
 	}
 	
 }

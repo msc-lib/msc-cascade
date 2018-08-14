@@ -7,7 +7,7 @@ public final class Constant {
 	
 	static class SystemInfo {
 		public String name = "msc cascade";
-		public String version = "0.8.0";
+		public String version = "1.0.0 20180814";
 		public String startup = new Timestamp(System.currentTimeMillis()).toString();
 
 		public SystemInfo() {

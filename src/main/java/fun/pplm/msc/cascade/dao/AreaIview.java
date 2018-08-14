@@ -58,15 +58,27 @@ public class AreaIview {
 	private void init() {
 		this.mapData = Area.INST.getMapData();
 		this.valueData = Area.INST.getValueData();
-		processIviewData();
+		processIviewData(iviewData.getValue(), iviewData);
 		processCityData();
 		processCityPinyin();
 	}
 
-	private void processIviewData() {
-		processIview(iviewData.getValue(), iviewData);
+	private void processIviewData(String key, IviewBean iviewBean) {
+		iviewMapData.put(key, iviewBean);
+		if (mapData.containsKey(key)) {
+			List<IviewBean> children = new ArrayList<>();
+			iviewBean.setChildren(children);
+			for (Entry<String, String> entry : mapData.get(key).entrySet()) {
+				String keyTemp = entry.getKey();
+				IviewBean temp = new IviewBean(keyTemp, entry.getValue());
+				children.add(temp);
+				if (mapData.containsKey(keyTemp)) {
+					processIviewData(keyTemp, temp);
+				}
+			}
+		}
 	}
-
+	
 	private void processCityData() {
 		for (Entry<String, String> item : valueData.entrySet()) {
 			String key = item.getKey();
@@ -86,21 +98,7 @@ public class AreaIview {
 		}).sorted((e1, e2) -> e1.pinyin.compareTo(e2.pinyin)).collect(Collectors.toList());
 	}
 
-	private void processIview(String key, IviewBean iviewBean) {
-		iviewMapData.put(key, iviewBean);
-		if (mapData.containsKey(key)) {
-			List<IviewBean> children = new ArrayList<>();
-			iviewBean.setChildren(children);
-			for (Entry<String, String> entry : mapData.get(key).entrySet()) {
-				String keyTemp = entry.getKey();
-				IviewBean temp = new IviewBean(keyTemp, entry.getValue());
-				children.add(temp);
-				if (mapData.containsKey(keyTemp)) {
-					processIview(keyTemp, temp);
-				}
-			}
-		}
-	}
+
 
 	public List<IviewBean> getProvinces() {
 		return getProvinces(null, false);
@@ -117,7 +115,7 @@ public class AreaIview {
 		return data;
 	}
 
-	public List<IviewBean> getCities(String provinceCode) {
+	public List<IviewBean> getCitiesByProinvceCode(String provinceCode) {
 		return getCities(Stream.of(provinceCode).collect(Collectors.toList()), null, false);
 	}
 
@@ -160,10 +158,6 @@ public class AreaIview {
 		return data;
 	}
 
-	public List<IviewBean> getIviewData() {
-		return iviewData.getChildren();
-	}
-
 	/**
 	 * 通过行政区划名称获取行政区划信息（单层） 匹配完整行政区划名称，可省略（省、市、区、县）单位 返回level@see(IviewBean.level)
 	 * 
@@ -174,7 +168,7 @@ public class AreaIview {
 		return values.stream()
 				.filter(value -> valueData.containsKey(value) || valueData.containsKey(value + "省")
 						|| valueData.containsKey(value + "市") || valueData.containsValue(value + "区")
-						|| valueData.containsValue(value + "县"))
+						|| valueData.containsValue(value + "县") || valueData.containsValue(value + "州"))
 				.map(value -> {
 					if (valueData.containsKey(value)) {
 						return value;
@@ -186,18 +180,29 @@ public class AreaIview {
 						return value + "区";
 					} else if (valueData.containsKey(value + "县")) {
 						return value + "县";
+					} else if (valueData.containsKey(value + "州")) {
+						return value + "州";
 					}
 					return null;
 				}).map(value -> new IviewBean(valueData.get(value), value, true)).collect(Collectors.toList());
 	}
 
-	public List<IviewBean> getCityPinyin() {
-		return cityPinyinData;
+	public List<IviewBean> getIviewData() {
+		return iviewData.getChildren();
 	}
 
-	public List<IviewBean> getCity(String value) {
-
-		return null;
+	public List<IviewBean> getCitiesByValue(String value) {
+		if (StringUtils.isNotBlank(value)) {
+			return cityData.stream().filter(item -> {
+				int index = item.getLabel().indexOf(value);
+				return index != -1 && index != item.label.length() - 1;
+			}).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+	
+	public List<IviewBean> getCityPinyin() {
+		return cityPinyinData;
 	}
 
 	public static class IviewBean implements Cloneable {
@@ -210,7 +215,7 @@ public class AreaIview {
 		private String label;
 
 		/**
-		 * 1：省，2：市，3：区（县）
+		 * 1：省（直辖市，自治区，特别行政区），2：市（州），3：区（县）
 		 */
 		@JsonInclude(JsonInclude.Include.NON_NULL)
 		private String level;
