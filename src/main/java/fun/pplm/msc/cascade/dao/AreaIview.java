@@ -9,20 +9,45 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import fun.pplm.msc.cascade.utils.PrintHelper;
+import fun.pplm.msc.cascade.utils.PyHelper;
 
 public class AreaIview {
 
 	public static AreaIview INST = new AreaIview();
 
+	/**
+	 * @see(Area.mapData)
+	 */
 	private Map<String, Map<String, String>> mapData;
 
+	/**
+	 * @see(Area.valueData)
+	 */
 	private Map<String, String> valueData;
 
+	/**
+	 * 行政区划编码索引行政区划对象，数据来源@see(Area.mapData)
+	 */
 	private Map<String, IviewBean> iviewMapData = new HashMap<>();
 
+	/**
+	 * 数据来源@see(Area.mapData)
+	 */
 	private IviewBean iviewData = new IviewBean("86", "中国");
-	
+
+	/**
+	 * 有且仅有城市信息的集合, 数据来源@see(Area.valueData)
+	 */
+	private List<IviewBean> cityData = new ArrayList<>();
+
+	/**
+	 * 带拼音的有且仅有城市信息的集合, 数据来源@see(Area.valueData)
+	 */
 	private List<IviewBean> cityPinyinData = new ArrayList<>();
 
 	private AreaIview() {
@@ -34,6 +59,7 @@ public class AreaIview {
 		this.mapData = Area.INST.getMapData();
 		this.valueData = Area.INST.getValueData();
 		processIviewData();
+		processCityData();
 		processCityPinyin();
 	}
 
@@ -41,14 +67,25 @@ public class AreaIview {
 		processIview(iviewData.getValue(), iviewData);
 	}
 
-	private void processCityPinyin() {
+	private void processCityData() {
 		for (Entry<String, String> item : valueData.entrySet()) {
-			if (item.getKey().endsWith("市")) {
-				System.out.println(item.getKey());
+			String key = item.getKey();
+			if (item.getValue().matches(Area.REGEX_CODE_CITY)) {
+				key = key.replace(Area.XIA_PREFIX, "");
+				IviewBean iviewBean = new IviewBean(item.getValue(), key);
+				this.cityData.add(iviewBean);
 			}
 		}
 	}
-	
+
+	private void processCityPinyin() {
+		this.cityPinyinData = this.cityData.stream().map(item -> {
+			IviewBean iviewBean = item.clone();
+			iviewBean.pinyin = PyHelper.getPingYin(iviewBean.label.replaceFirst("[省|市|区|县]$", ""));
+			return iviewBean;
+		}).sorted((e1, e2) -> e1.pinyin.compareTo(e2.pinyin)).collect(Collectors.toList());
+	}
+
 	private void processIview(String key, IviewBean iviewBean) {
 		iviewMapData.put(key, iviewBean);
 		if (mapData.containsKey(key)) {
@@ -62,10 +99,9 @@ public class AreaIview {
 					processIview(keyTemp, temp);
 				}
 			}
-			;
 		}
 	}
-	
+
 	public List<IviewBean> getProvinces() {
 		return getProvinces(null, false);
 	}
@@ -84,7 +120,7 @@ public class AreaIview {
 	public List<IviewBean> getCities(String provinceCode) {
 		return getCities(Stream.of(provinceCode).collect(Collectors.toList()), null, false);
 	}
-	
+
 	public List<IviewBean> getCities(List<String> provinceCodes, List<String> cityCodes, boolean deep) {
 		List<IviewBean> data = Collections.emptyList();
 		if (cityCodes != null && !cityCodes.isEmpty()) {
@@ -107,7 +143,7 @@ public class AreaIview {
 	public List<IviewBean> getAreas(String cityCode) {
 		return getAreas(Stream.of(cityCode).collect(Collectors.toList()), null);
 	}
-	
+
 	public List<IviewBean> getAreas(List<String> cityCodes, List<String> areaCodes) {
 		List<IviewBean> data = Collections.emptyList();
 		if (areaCodes != null && !areaCodes.isEmpty()) {
@@ -128,9 +164,18 @@ public class AreaIview {
 		return iviewData.getChildren();
 	}
 
+	/**
+	 * 通过行政区划名称获取行政区划信息（单层） 匹配完整行政区划名称，可省略（省、市、区、县）单位 返回level@see(IviewBean.level)
+	 * 
+	 * @param values
+	 * @return
+	 */
 	public List<IviewBean> getFromValue(List<String> values) {
-		return values.stream().filter(value -> valueData.containsKey(value) || valueData.containsKey(value + "省") || valueData.containsKey(value + "市")
-				|| valueData.containsValue(value + "区") || valueData.containsValue(value + "县")).map(value -> {
+		return values.stream()
+				.filter(value -> valueData.containsKey(value) || valueData.containsKey(value + "省")
+						|| valueData.containsKey(value + "市") || valueData.containsValue(value + "区")
+						|| valueData.containsValue(value + "县"))
+				.map(value -> {
 					if (valueData.containsKey(value)) {
 						return value;
 					} else if (valueData.containsKey(value + "省")) {
@@ -143,16 +188,32 @@ public class AreaIview {
 						return value + "县";
 					}
 					return null;
-				}).map(value -> new IviewBean(valueData.get(value), value)).collect(Collectors.toList());
+				}).map(value -> new IviewBean(valueData.get(value), value, true)).collect(Collectors.toList());
 	}
 
 	public List<IviewBean> getCityPinyin() {
 		return cityPinyinData;
 	}
-	
-	public static class IviewBean {
+
+	public List<IviewBean> getCity(String value) {
+
+		return null;
+	}
+
+	public static class IviewBean implements Cloneable {
+
+		public static final String LEVEL_PROVINCE = "1";
+		public static final String LEVEL_CITY = "2";
+		public static final String LEVEL_AREA = "3";
+
 		private String value;
 		private String label;
+
+		/**
+		 * 1：省，2：市，3：区（县）
+		 */
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		private String level;
 
 		@JsonInclude(JsonInclude.Include.NON_NULL)
 		private String pinyin;
@@ -165,9 +226,33 @@ public class AreaIview {
 		}
 
 		public IviewBean(String value, String label) {
+			this(value, label, false);
+		}
+
+		public IviewBean(String value, String label, boolean levelFlag) {
 			super();
 			this.value = value;
 			this.label = label;
+			if (levelFlag) {
+				initLevel();
+			}
+		}
+
+		public void initLevel() {
+			if (StringUtils.isNoneBlank(value)) {
+				if (value.matches(Area.REGEX_CODE_PROVICE)) {
+					this.level = LEVEL_PROVINCE;
+				} else if (value.matches(Area.REGEX_CODE_CITY)) {
+					this.level = LEVEL_CITY;
+				} else if (value.matches(Area.REGEX_CODE_AREA)) {
+					this.level = LEVEL_AREA;
+				}
+			}
+		}
+
+		@Override
+		public IviewBean clone() {
+			return new IviewBean(value, label);
 		}
 
 		public String getValue() {
@@ -204,6 +289,6 @@ public class AreaIview {
 	}
 
 	public static void main(String[] args) {
-		AreaIview.INST.getCityPinyin();
+		PrintHelper.jsonPretty(AreaIview.INST.getCityPinyin());
 	}
 }

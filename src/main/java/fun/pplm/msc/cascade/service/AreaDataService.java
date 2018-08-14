@@ -57,6 +57,12 @@ public class AreaDataService {
 		return ResHelper.success(areaIview.getCities(provValue));
 	}
 	
+	@GET
+	@Path("/city/pinyin")
+	public Response doGetCityPinyin() {
+		return ResHelper.success(areaIview.getCityPinyin());
+	}
+	
 	@POST
 	@Path("/city")
 	@Consumes(MediaType.APPLICATION_JSON)

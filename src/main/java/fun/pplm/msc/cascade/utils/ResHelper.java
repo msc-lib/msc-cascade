@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.vertx.core.json.Json;
 
-public class ResHelper {
+public final class ResHelper {
 	
 	public static Response success() {
 		return success(null);

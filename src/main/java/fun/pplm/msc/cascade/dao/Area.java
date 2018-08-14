@@ -15,14 +15,33 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.vertx.core.json.Json;
+
 public class Area {
+	
+	public static final String XIA_LABEL = "市辖区";
+	public static final String XIA_PREFIX = "(辖)";
+	
+	public static final String REGEX_CODE_PROVICE = "[1-9][0-9]0000";
+	public static final String REGEX_CODE_CITY = "[1-9][0-9][0-9][1-9]00";
+	public static final String REGEX_CODE_AREA = "[1-9][0-9][0-9][1-9][0-9][1-9]";
+	
 	
 	public static Area INST = new Area();
 	
+	/**
+	 * 原始数据，编码索引行政区划名称
+	 */
 	private Map<String, String> areaData = new LinkedHashMap<>();
 	
+	/**
+	 * 二级级联表达行政区划的数据关系，编码索引行政区划
+	 */
 	private Map<String, Map<String, String>> mapData = new LinkedHashMap<>();
 	
+	/**
+	 * 行政区划中文名称索引编码
+	 */
 	private Map<String, String> valueData = new HashMap<>();
 
 	private Area() {
@@ -65,9 +84,15 @@ public class Area {
 			if (temp == null) {
 				temp = key;
 			} else {
+				/**
+				 * 处理直辖市
+				 */
 				if (temp.matches("[1-6][0-6]0000")) {
 					if (!key.matches("[1-6][0-6]0100")) {
-						add(temp.substring(0, 2) + "0100", "市辖区");
+						String fixedKey = temp.substring(0, 2) + "0100";
+						add(fixedKey, XIA_LABEL);
+						//当只处理城市的市辖区时，需要转变成对应的直辖市名称，而不是使用市辖区。
+						valueData.put(XIA_PREFIX + this.areaData.get(temp), fixedKey);
 					}
 				}
 			}
@@ -79,11 +104,11 @@ public class Area {
 	}
 	
 	private void add(String key, String value) {
-		if (key.matches("[1-9][0-9]0000")) {
+		if (key.matches(REGEX_CODE_PROVICE)) {
 			add("86", key, value);
-		} else if (key.matches("[1-9][0-9][0-9][0-9]00")) {
+		} else if (key.matches(REGEX_CODE_CITY)) {
 			add(key.substring(0, 2) + "0000", key, value);
-		} else {
+		} else if (key.matches(REGEX_CODE_AREA)){
 			add(key.substring(0, 4) + "00", key, value);
 		}
 	}
@@ -129,6 +154,7 @@ public class Area {
 	}
 	
 	public static void main(String[] args) {
-		writeAreaJson();
+		//writeAreaJson();
+		System.out.println(Json.encodePrettily(Area.INST.valueData));
 	}
 }

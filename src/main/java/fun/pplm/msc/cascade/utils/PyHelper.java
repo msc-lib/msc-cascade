@@ -7,7 +7,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
-public class PyHelper {
+public final class PyHelper {
 	/**
 	 * 使用该方法将首字母变成拼音，后续可以按拼音进行排序。
 	 */

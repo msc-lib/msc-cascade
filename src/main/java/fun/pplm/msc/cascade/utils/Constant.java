@@ -2,7 +2,7 @@ package fun.pplm.msc.cascade.utils;
 
 import java.sql.Timestamp;
 
-public class Constant {
+public final class Constant {
 	public static final SystemInfo SYSTEM_INFO = new SystemInfo();
 	
 	static class SystemInfo {
@@ -14,4 +14,5 @@ public class Constant {
 			super();
 		}
 	}
+	
 }
