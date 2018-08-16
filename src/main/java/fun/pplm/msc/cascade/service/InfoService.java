@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import fun.pplm.msc.cascade.utils.Constant;
-import fun.pplm.msc.cascade.utils.ResHelper;
+import fun.pplm.msc.framework.vertx.utils.ResHelper;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)

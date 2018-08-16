@@ -79,33 +79,15 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-core</artifactId>
-			<version>${vertx.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-vertx</artifactId>
-			<version>${resteasy.version}</version>
+			<groupId>fun.pplm.msc</groupId>
+			<artifactId>framework.vertx</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
 		    <groupId>com.belerweb</groupId>
 		    <artifactId>pinyin4j</artifactId>
 		    <version>2.5.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.7</version>
 		</dependency>
 
 	</dependencies>

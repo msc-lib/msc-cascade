@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import fun.pplm.msc.cascade.dao.AreaIview;
 import fun.pplm.msc.cascade.query.IviewQuery;
-import fun.pplm.msc.cascade.utils.ResHelper;
+import fun.pplm.msc.framework.vertx.utils.ResHelper;
 import io.vertx.core.json.Json;
 
 @Path("/areadata/iview/v1.0")
