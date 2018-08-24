@@ -9,6 +9,6 @@ public interface DuoyinziProcess {
 	 * @param zi 多音字
 	 * @return
 	 */
-	public String process(String huanyu, char zi);
+	public String process(String huanyu, char zi, String[] pinyin);
 	
 }

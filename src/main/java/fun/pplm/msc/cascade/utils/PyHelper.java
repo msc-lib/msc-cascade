@@ -1,8 +1,5 @@
 package fun.pplm.msc.cascade.utils;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -29,11 +26,12 @@ public final class PyHelper {
 			try {
 				String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c, getDefaultOutputFormat());
 				if (pinyin != null) {
+					processYu2v(pinyin);
 					if (pinyin.length > 1) {
 						if (same(pinyin)) {
 							hanyuPinYin += pinyin[0];
 						} else {
-							String duoyin = duoyinziProcess.process(hanyu, c);
+							String duoyin = duoyinziProcess.process(hanyu, c, pinyin);
 							if (StringUtils.isNotBlank(duoyin)) {
 								hanyuPinYin += duoyin;
 							} else {
@@ -41,9 +39,6 @@ public final class PyHelper {
 								hanyuPinYin += pinyin[0];
 							}
 						}
-						PrintHelper.jsonPretty(hanyu);
-						PrintHelper.jsonPretty(c);
-						PrintHelper.jsonPretty(pinyin);
 					} else {
 						hanyuPinYin += pinyin[0];
 					}
@@ -57,6 +52,14 @@ public final class PyHelper {
 		return hanyuPinYin;
 	}
 
+	private static void processYu2v(String[] pinyin) {
+		if (pinyin != null && pinyin.length > 0) {
+			for (int i = 0; i < pinyin.length; i++) {
+				pinyin[i] = pinyin[i].replace("u:", "v");
+			}
+		}
+	}
+	
 	/**
 	 * 判断数组中的所有字符串是否相同
 	 * @param arr
@@ -75,27 +78,6 @@ public final class PyHelper {
 		return true;
 	}
 	
-	/**
-	 * 以字为中心（左侧第一个开始），获取字的left right两端的各种组合
-	 * 举例：大家用过都说好, 过, 1, 1; 结果：用过，过都，用过都 
-	 * 举例：大家用过都说好, 过, 0, 1; 结果：过都
-	 * 举例：大家用过都说好, 过, 2, 0; 结果：家用过，用过
-	 * 举例：大家用过都说好, 过, 2, 1; 结果：家用过都，家用过，用过，用过都， 过都
-	 * @param hanyu
-	 * @param zi
-	 * @param left
-	 * @param right
-	 * @return
-	 */
-	private static List<String> wordProcess(String hanyu, char zi, int left, int right) {
-		int index = hanyu.indexOf(zi);
-		if (index == -1) {
-			return Collections.emptyList();
-		}
-		
-		return null;
-	}
-	
 	private static HanyuPinyinOutputFormat getDefaultOutputFormat() {
 		HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
 		format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
@@ -105,6 +87,6 @@ public final class PyHelper {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(PyHelper.getPingYin("天津"));
+		System.out.println(PyHelper.getPingYin("长沙"));
 	}
 }

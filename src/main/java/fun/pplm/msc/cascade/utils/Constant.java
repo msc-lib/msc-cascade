@@ -4,7 +4,12 @@ import java.sql.Timestamp;
 
 public final class Constant {
 	
-	public static final Version DATA_VERSION_PINYIN = new Version("v1.0.0", "2018-08-24 10:59:00");
+	/**
+	 * 特殊区域，true增加香港，澳门，台湾，钓鱼岛
+	 */
+	public static final boolean SPECIAL_AREA = false;
+	
+	public static final Version DATA_VERSION_PINYIN = new Version("v1.1.0", "2018-08-24 19:59:00");
 
 	public static final Version DATA_VERSION_DATA = new Version("v1.0.0", "2018-08-24 10:59:00");
 	
@@ -12,14 +17,13 @@ public final class Constant {
 	
 	static class SystemInfo {
 		public String name = "msc cascade";
-		public String version = "1.1.0 20180824";
+		public String version = "1.1.1 20180824";
 		public String startup = new Timestamp(System.currentTimeMillis()).toString();
 
 		public SystemInfo() {
 			super();
 		}
 	}
-	
 	
 	public static class Version {
 		public String version;
