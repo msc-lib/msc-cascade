@@ -1,6 +1,7 @@
 package fun.pplm.msc.cascade.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,7 @@ public class AreaIview {
 			}
 		}
 	}
-	
+
 	private void processCityData() {
 		for (Entry<String, String> item : valueData.entrySet()) {
 			String key = item.getKey();
@@ -97,8 +98,6 @@ public class AreaIview {
 			return iviewBean;
 		}).sorted((e1, e2) -> e1.pinyin.compareTo(e2.pinyin)).collect(Collectors.toList());
 	}
-
-
 
 	public List<IviewBean> getProvinces() {
 		return getProvinces(null, false);
@@ -165,26 +164,17 @@ public class AreaIview {
 	 * @return
 	 */
 	public List<IviewBean> getFromValue(List<String> values) {
-		return values.stream()
-				.filter(value -> valueData.containsKey(value) || valueData.containsKey(value + "省")
-						|| valueData.containsKey(value + "市") || valueData.containsValue(value + "区")
-						|| valueData.containsValue(value + "县") || valueData.containsValue(value + "州"))
-				.map(value -> {
-					if (valueData.containsKey(value)) {
-						return value;
-					} else if (valueData.containsKey(value + "省")) {
-						return value + "省";
-					} else if (valueData.containsKey(value + "市")) {
-						return value + "市";
-					} else if (valueData.containsKey(value + "区")) {
-						return value + "区";
-					} else if (valueData.containsKey(value + "县")) {
-						return value + "县";
-					} else if (valueData.containsKey(value + "州")) {
-						return value + "州";
-					}
-					return null;
-				}).map(value -> new IviewBean(valueData.get(value), value, true)).collect(Collectors.toList());
+		final List<IviewBean> iviews = new ArrayList<>();
+		for (String value : values) {
+			iviews.addAll(getQueryKey(value).stream().filter(key -> valueData.containsKey(key))
+					.map(key -> new IviewBean(valueData.get(key), key, true)).collect(Collectors.toList()));
+		}
+		return iviews;
+	}
+
+	private List<String> getQueryKey(String value) {
+		return Arrays.<String>asList(value, value + "省", value + "市", value + "区", value + "县", value + "州",
+				Area.XIA_PREFIX + value, Area.XIA_PREFIX + value + "市");
 	}
 
 	public List<IviewBean> getIviewData() {
@@ -200,7 +190,7 @@ public class AreaIview {
 		}
 		return Collections.emptyList();
 	}
-	
+
 	public List<IviewBean> getCityPinyin() {
 		return cityPinyinData;
 	}

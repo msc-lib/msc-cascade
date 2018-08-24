@@ -1,10 +1,16 @@
 swagger: "2.0"
 
 info:
-  version: "v1.3.3 20180814"
+  version: "v1.4.3 20180824"
   title: "msc-cascade"
   description: "
   # 文档变更记录
+
+  ## v1.4.3 @20180824
+   
+  - 增加城市拼音数据版本接口
+  
+  - 增加全量级联数据版本接口
 
   ## v1.3.3 @小砾 20180814
   
@@ -60,8 +66,16 @@ definitions:
         type: "string"
       label:
         type: "string"
-
-
+        
+  Version: &VersionObj
+    type: "object"
+    properties: 
+      version:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "YYYY-mm-dd HH:mi:ss"
+        
 paths:
   /areadata:
     get:
@@ -94,6 +108,22 @@ paths:
                               type: "object"
                               properties:
                                 <<: *AreaItem
+  /areadata/version:
+    get:
+      tags:
+      - "iview"
+      produces:
+      - "application/json"  
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                <<: *VersionObj
+  
   /province:
     get:
       tags:
@@ -260,8 +290,25 @@ paths:
                   properties:
                     <<: *AreaItem
                     pinyin:
-                      type: 'string'
-
+                      type: "string"
+                      
+  /city/pinyin/version:
+    get:
+      description: "获取拼音数据版本"
+      tags:
+      - "iview"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              <<: *ApiResponse
+              content:
+                <<: *VersionObj
+                
   /area/{cityValue}:
     get:
       tags:

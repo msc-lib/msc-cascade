@@ -156,5 +156,6 @@ public class Area {
 	public static void main(String[] args) {
 		//writeAreaJson();
 		System.out.println(Json.encodePrettily(Area.INST.valueData));
+		System.out.println(Area.INST.valueData.get(XIA_PREFIX + "北京" + "市"));
 	}
 }

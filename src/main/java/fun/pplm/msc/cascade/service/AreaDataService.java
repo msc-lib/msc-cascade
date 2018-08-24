@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import fun.pplm.msc.cascade.dao.AreaIview;
 import fun.pplm.msc.cascade.query.IviewQuery;
+import fun.pplm.msc.cascade.utils.Constant;
 import fun.pplm.msc.framework.vertx.utils.ResHelper;
 import io.vertx.core.json.Json;
 
@@ -32,6 +33,12 @@ public class AreaDataService {
 	@Path("/areadata")
 	public Response doGetAreaData() {
 		return ResHelper.success(areaIview.getIviewData());
+	}
+	
+	@GET
+	@Path("/areadata/version")
+	public Response doGetAreaDataVersion() {
+		return ResHelper.success(Constant.DATA_VERSION_DATA);
 	}
 
 	@GET
@@ -62,6 +69,12 @@ public class AreaDataService {
 	@Path("/city/pinyin")
 	public Response doGetCityPinyin() {
 		return ResHelper.success(areaIview.getCityPinyin());
+	}
+	
+	@GET
+	@Path("/city/pinyin/version")
+	public Response doGetCityPinyinVersion() {
+		return ResHelper.success(Constant.DATA_VERSION_PINYIN);
 	}
 	
 	@POST
