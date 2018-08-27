@@ -94,7 +94,7 @@ public class AreaIview {
 	private void processCityPinyin() {
 		this.cityPinyinData = this.cityData.stream().map(item -> {
 			IviewBean iviewBean = item.clone();
-			iviewBean.pinyin = PyHelper.getPingYin(iviewBean.label.replaceFirst("[省|市|区|县]$", ""));
+			iviewBean.pinyin = PyHelper.getPingYin(iviewBean.label.replaceAll(Area.REGEX_CITY_POSTFIX, ""));
 			return iviewBean;
 		}).sorted((e1, e2) -> e1.pinyin.compareTo(e2.pinyin)).collect(Collectors.toList());
 	}
@@ -266,6 +266,14 @@ public class AreaIview {
 			this.label = label;
 		}
 
+		public String getLevel() {
+			return level;
+		}
+
+		public void setLevel(String level) {
+			this.level = level;
+		}
+		
 		public String getPinyin() {
 			return pinyin;
 		}
@@ -284,6 +292,7 @@ public class AreaIview {
 	}
 
 	public static void main(String[] args) {
-		PrintHelper.jsonPretty(AreaIview.INST.getCityPinyin());
+		//PrintHelper.jsonPretty(AreaIview.INST.getCityPinyin());
+		PrintHelper.jsonPretty(AreaIview.INST.getFromValue(Stream.of("北京").collect(Collectors.toList())));
 	}
 }

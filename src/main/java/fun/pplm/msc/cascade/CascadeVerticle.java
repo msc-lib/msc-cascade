@@ -1,10 +1,8 @@
 package fun.pplm.msc.cascade;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
 
 import org.jboss.resteasy.plugins.server.vertx.VertxRegistry;
-import org.jboss.resteasy.plugins.server.vertx.VertxResteasyDeployment;
 
 import fun.pplm.msc.cascade.service.AreaDataService;
 import fun.pplm.msc.cascade.service.DebugService;
@@ -13,15 +11,14 @@ import fun.pplm.msc.framework.vertx.ResteasyVerticle;
 import fun.pplm.msc.framework.vertx.provider.ExceptionProvider;
 
 public class CascadeVerticle extends ResteasyVerticle {
-	
+
 	@Override
-	protected void deploy(VertxResteasyDeployment deployment) {
-		deployment.setActualProviderClasses(Stream.of(ExceptionProvider.class).collect(Collectors.toList()));
-		
+	protected void registerProviders(List<Class<?>> classes) {
+		classes.add(ExceptionProvider.class);
 	}
 
 	@Override
-	protected void register(VertxRegistry registry) {
+	protected void registerService(VertxRegistry registry) {
 		registry.addPerInstanceResource(AreaDataService.class);
 	    registry.addPerInstanceResource(InfoService.class);
 	    registry.addPerInstanceResource(DebugService.class);

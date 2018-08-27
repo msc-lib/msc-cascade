@@ -4,7 +4,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import fun.pplm.msc.cascade.utils.Constant;
 import fun.pplm.msc.framework.vertx.utils.ResHelper;
@@ -15,7 +14,7 @@ public class InfoService {
 	
 	@GET
 	@Path("/sysinfo")
-	public Response doGetSysinfo() {
+	public Object doGetSysinfo() {
 		return ResHelper.success(Constant.SYSTEM_INFO);
 	}
 	

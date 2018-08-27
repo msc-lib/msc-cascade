@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fun.pplm.msc.cascade.utils.Constant;
-import io.vertx.core.json.Json;
+import fun.pplm.msc.cascade.utils.PrintHelper;
 
 public class Area {
 
@@ -26,6 +26,8 @@ public class Area {
 	public static final String REGEX_CODE_PROVICE = "[1-9][0-9]0000";
 	public static final String REGEX_CODE_CITY = "[1-9][0-9][0-9][1-9]00";
 	public static final String REGEX_CODE_AREA = "[1-9][0-9][0-9][1-9][0-9][1-9]";
+	
+	public static final String REGEX_CITY_POSTFIX = "[市$|自治州$|地区$]";
 
 	public static Area INST = new Area();
 
@@ -150,7 +152,8 @@ public class Area {
 
 	public static void main(String[] args) {
 		// writeAreaJson();
-		System.out.println(Json.encodePrettily(Area.INST.valueData));
-		System.out.println(Area.INST.valueData.get(XIA_PREFIX + "北京" + "市"));
+		PrintHelper.jsonPretty(Area.INST.valueData);
+		PrintHelper.jsonPretty(Area.INST.valueData.get(XIA_PREFIX + "北京" + "市"));
+		PrintHelper.jsonPretty("阿坝藏族羌族自治州".replaceAll(REGEX_CITY_POSTFIX, ""));
 	}
 }

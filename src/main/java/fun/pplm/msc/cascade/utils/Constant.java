@@ -9,7 +9,7 @@ public final class Constant {
 	 */
 	public static final boolean SPECIAL_AREA = false;
 	
-	public static final Version DATA_VERSION_PINYIN = new Version("v1.1.0", "2018-08-24 19:59:00");
+	public static final Version DATA_VERSION_PINYIN = new Version("v1.1.1", "2018-08-24 19:59:00");
 
 	public static final Version DATA_VERSION_DATA = new Version("v1.0.0", "2018-08-24 10:59:00");
 	
@@ -17,7 +17,7 @@ public final class Constant {
 	
 	static class SystemInfo {
 		public String name = "msc cascade";
-		public String version = "1.1.1 20180824";
+		public String version = "1.1.2 20180827";
 		public String startup = new Timestamp(System.currentTimeMillis()).toString();
 
 		public SystemInfo() {

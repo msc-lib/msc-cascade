@@ -11,17 +11,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import fun.pplm.msc.cascade.dao.AreaIview;
 import fun.pplm.msc.cascade.query.IviewQuery;
 import fun.pplm.msc.cascade.utils.Constant;
 import fun.pplm.msc.framework.vertx.utils.ResHelper;
-import io.vertx.core.json.Json;
 
 @Path("/areadata/iview/v1.0")
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,100 +27,94 @@ public class AreaDataService {
 
 	@GET
 	@Path("/areadata")
-	public Response doGetAreaData() {
+	public Object doGetAreaData() {
 		return ResHelper.success(areaIview.getIviewData());
 	}
 	
 	@GET
 	@Path("/areadata/version")
-	public Response doGetAreaDataVersion() {
+	public Object doGetAreaDataVersion() {
 		return ResHelper.success(Constant.DATA_VERSION_DATA);
 	}
 
 	@GET
 	@Path("/province")
-	public Response doGetProvince() {
+	public Object doGetProvince() {
 		return ResHelper.success(areaIview.getProvinces());
 	}
 
 	@POST
 	@Path("/province")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response doPostProvince(String body) {
-		if (StringUtils.isBlank(body)) {
+	public Object doPostProvince(IviewQuery iviewQuery) {
+		if (iviewQuery == null) {
 			return ResHelper.success(areaIview.getProvinces(null, false));
 		}
-		IviewQuery iviewQuery = Json.decodeValue(body, IviewQuery.class);
-		System.out.println(Json.encodePrettily(areaIview.getProvinces(iviewQuery.getProvValues(), iviewQuery.getDeep() == 1 ? true : false)));
 		return ResHelper.success(areaIview.getProvinces(iviewQuery.getProvValues(), iviewQuery.getDeep() == 1 ? true : false));
 	}
 	
 	@GET
 	@Path("/city/{provValue}")
-	public Response doGetCity(@PathParam("provValue") String provValue) {
+	public Object doGetCity(@PathParam("provValue") String provValue) {
 		return ResHelper.success(areaIview.getCitiesByProinvceCode(provValue));
 	}
 	
 	@GET
 	@Path("/city/pinyin")
-	public Response doGetCityPinyin() {
+	public Object doGetCityPinyin() {
 		return ResHelper.success(areaIview.getCityPinyin());
 	}
 	
 	@GET
 	@Path("/city/pinyin/version")
-	public Response doGetCityPinyinVersion() {
+	public Object doGetCityPinyinVersion() {
 		return ResHelper.success(Constant.DATA_VERSION_PINYIN);
 	}
 	
 	@POST
 	@Path("/city")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response doPostCity(String body) {
-		if (StringUtils.isBlank(body)) {
+	public Object doPostCity(IviewQuery iviewQuery) {
+		if (iviewQuery == null) {
 			return ResHelper.success();
 		}
-		IviewQuery iviewQuery = Json.decodeValue(body, IviewQuery.class);
 		return ResHelper.success(areaIview.getCities(iviewQuery.getProvValues(), iviewQuery.getCityValues(),
 				iviewQuery.getDeep() == 1 ? true : false));
 	}
 	
 	@GET
 	@Path("/area/{cityValue}")
-	public Response doGetArea(@PathParam("cityValue") String cityValue) {
+	public Object doGetArea(@PathParam("cityValue") String cityValue) {
 		return ResHelper.success(areaIview.getAreas(cityValue));
 	}
 
 	@POST
 	@Path("/area")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response doPostArea(String body) {
-		if (StringUtils.isBlank(body)) {
+	public Object doPostArea(IviewQuery iviewQuery) {
+		if (iviewQuery == null) {
 			return ResHelper.success();
 		}
-		IviewQuery iviewQuery = Json.decodeValue(body, IviewQuery.class);
 		return ResHelper.success(areaIview.getAreas(iviewQuery.getCityValues(), iviewQuery.getAreaValues()));
 	}
 	
 	@POST
 	@Path("/value")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response doPostValue(String body) {
-		if (StringUtils.isBlank(body)) {
+	public Object doPostValue(List<String> values) {
+		if (values == null || values.isEmpty()) {
 			return ResHelper.success(Collections.emptyList());
 		}
-		List<String> values = Json.decodeValue(body, new TypeReference<List<String>>(){});
 		return ResHelper.success(areaIview.getFromValue(values));
 	}
 	
 	@GET
 	@Path("/value/city")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response doGetValueCity(@QueryParam("city") String city) {
+	public Object doGetValueCity(@QueryParam("city") String city) {
 		if (StringUtils.isBlank(city)) {
 			return ResHelper.success(Collections.emptyList());
 		}
-		System.out.println(city);
 		return ResHelper.success(areaIview.getCitiesByValue(city));
 	}
 	
