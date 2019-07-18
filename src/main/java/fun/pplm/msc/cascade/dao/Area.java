@@ -24,8 +24,8 @@ public class Area {
 	public static final String XIA_PREFIX = "(辖)";
 
 	public static final String REGEX_CODE_PROVICE = "[1-9][0-9]0000";
-	public static final String REGEX_CODE_CITY = "[1-9][0-9][0-9][1-9]00";
-	public static final String REGEX_CODE_AREA = "[1-9][0-9][0-9][1-9][0-9][1-9]";
+	public static final String REGEX_CODE_CITY = "[1-9][0-9][0-9][0-9]00";
+	public static final String REGEX_CODE_AREA = "[1-9][0-9][0-9][0-9][0-9][0-9]";
 	
 	public static final String REGEX_CITY_POSTFIX = "[市$|自治州$|地区$]";
 
@@ -71,6 +71,7 @@ public class Area {
 				e.printStackTrace();
 			}
 		}
+		
 	}
 
 	private void processAreaData() {
@@ -107,6 +108,8 @@ public class Area {
 			add(key.substring(0, 2) + "0000", key, value);
 		} else if (key.matches(REGEX_CODE_AREA)) {
 			add(key.substring(0, 4) + "00", key, value);
+		} else {
+			throw new RuntimeException("invalid key [" + key + "] value [" + value + "]");
 		}
 	}
 
@@ -151,9 +154,10 @@ public class Area {
 	}
 
 	public static void main(String[] args) {
-		// writeAreaJson();
+		//Area.INST.getAreaData();
+		//writeAreaJson();
 		PrintHelper.jsonPretty(Area.INST.valueData);
-		PrintHelper.jsonPretty(Area.INST.valueData.get(XIA_PREFIX + "北京" + "市"));
-		PrintHelper.jsonPretty("阿坝藏族羌族自治州".replaceAll(REGEX_CITY_POSTFIX, ""));
+		//PrintHelper.jsonPretty(Area.INST.valueData.get(XIA_PREFIX + "北京" + "市"));
+		//PrintHelper.jsonPretty("阿坝藏族羌族自治州".replaceAll(REGEX_CITY_POSTFIX, ""));
 	}
 }
