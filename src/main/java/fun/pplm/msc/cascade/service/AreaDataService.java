@@ -32,6 +32,12 @@ public class AreaDataService {
 	}
 	
 	@GET
+	@Path("/areadatadiff")
+	public Object doGetAreaDataDiff() {
+		return ResHelper.success(areaIview.getLeftData());
+	}
+	
+	@GET
 	@Path("/areadata/version")
 	public Object doGetAreaDataVersion() {
 		return ResHelper.success(Constant.DATA_VERSION_DATA);

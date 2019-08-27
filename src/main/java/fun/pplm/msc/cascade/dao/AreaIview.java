@@ -25,6 +25,11 @@ public class AreaIview {
 	 * @see(Area.mapData)
 	 */
 	private Map<String, Map<String, String>> mapData;
+	
+	/**
+	 * @see(Area.keyData)
+	 */
+	private Map<String, String> keyData;
 
 	/**
 	 * @see(Area.valueData)
@@ -35,6 +40,11 @@ public class AreaIview {
 	 * 行政区划编码索引行政区划对象，数据来源@see(Area.mapData)
 	 */
 	private Map<String, IviewBean> iviewMapData = new HashMap<>();
+	
+	/**
+	 * 成功组装的编码数据
+	 */
+	private List<String> iviewMappedKey = new ArrayList<>();
 
 	/**
 	 * 数据来源@see(Area.mapData)
@@ -58,6 +68,7 @@ public class AreaIview {
 
 	private void init() {
 		this.mapData = Area.INST.getMapData();
+		this.keyData = Area.INST.getKeyData();
 		this.valueData = Area.INST.getValueData();
 		processIviewData(iviewData.getValue(), iviewData);
 		processCityData();
@@ -72,12 +83,23 @@ public class AreaIview {
 			for (Entry<String, String> entry : mapData.get(key).entrySet()) {
 				String keyTemp = entry.getKey();
 				IviewBean temp = new IviewBean(keyTemp, entry.getValue());
+				iviewMappedKey.add(keyTemp);
 				children.add(temp);
 				if (mapData.containsKey(keyTemp)) {
 					processIviewData(keyTemp, temp);
 				}
 			}
 		}
+	}
+	
+	public Map<String, String> getLeftData() {
+		Map<String, String> map = new HashMap<>();
+		for (String code : this.keyData.keySet()) {
+			if (!iviewMappedKey.contains(code)) {
+				map.put(code, keyData.get(code));
+			}
+		}
+		return map;
 	}
 
 	private void processCityData() {
